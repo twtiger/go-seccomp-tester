@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"golang.org/x/sys/unix"
-
 	sg "github.com/subgraph/go-seccomp"
+	"github.com/twtiger/go-seccomp-tester/helpers"
 	"github.com/twtiger/gosecco/asm"
 )
 
@@ -45,20 +44,7 @@ func main() {
 	if e != nil {
 		fmt.Printf("Had error when compiling: %#v\n", e)
 	} else {
-		our := copyFilters(filters)
+		our := helpers.CopyFilters(filters)
 		fmt.Print(asm.Dump(our))
 	}
-}
-
-func copyFilters(inp []sg.SockFilter) []unix.SockFilter {
-	result := make([]unix.SockFilter, len(inp))
-	for ix, v := range inp {
-		result[ix] = unix.SockFilter{
-			Code: v.Code,
-			Jt:   v.JT,
-			Jf:   v.JF,
-			K:    v.K,
-		}
-	}
-	return result
 }
